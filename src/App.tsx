@@ -14,28 +14,38 @@ function App() {
 
   const values = useSelector((state: RootState) => state.values);
 
+  const initializeUsers = () => {
+    getUsers().then(
+      response => {
+        const _users = response.data.map((user: any) => ({
+          id: user.id,
+          title: user.username,
+          description: user.email
+        })) as Item[];
+        setUsers(_users);
+      }
+    ).catch(
+      error => console.error(error)
+    )
+  }
+  const initializeProducts = () => {
+    getProducts().then(
+      response => {
+        const _products = response.data.map((product: any) => ({
+          id: product.id,
+          title: product.title,
+          description: product.description
+        })) as Item[];
+        setProducts(_products);
+      }
+    ).catch(
+      error => console.error(error)
+    )
+  }
   useEffect(() => {
-    Promise.all([
-      getUsers(),
-      getProducts()
-    ]).then(([usersResponse, productsResponse]) => {
-      const _users = usersResponse.data.map((user: any) => ({
-        id: user.id,
-        title: user.username,
-        description: user.email
-      })) as Item[];
-      const _products = productsResponse.data.map((product: any) => ({
-        id: product.id,
-        title: product.title,
-        description: product.description
-      })) as Item[];
-      setUsers(_users);
-      setProducts(_products);
-    }).catch(error => {
-      console.error(error);
-    });
+    initializeUsers();
+    initializeProducts();
   }, []);
-
 
   return (
     <Grid container spacing={3} minHeight="100vh">
