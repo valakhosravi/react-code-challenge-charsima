@@ -33,11 +33,7 @@ function App() {
       setProducts(_products);
     }).catch(error => {
       console.error(error);
-    }).finally(
-      () => {
-        // setIsLoading(false);
-      }
-    );
+    });
   }, []);
 
 

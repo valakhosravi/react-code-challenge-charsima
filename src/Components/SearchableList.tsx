@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, ButtonBase, List, ListItem, ListItemAvatar, ListItemText, TextField, Typography } from '@mui/material'
+import { Avatar, Box, Button, ButtonBase, CircularProgress, List, ListItem, ListItemAvatar, ListItemText, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux/es/hooks/useDispatch'
 import { Item } from '../Interfaces/Item'
@@ -6,6 +6,7 @@ import { addValue, clearValues } from '../Redux/Slices/valuesSlice';
 
 export default function SearchableList(props: SearchableListProps) {
     const [searchTerm, setSearchTerm] = useState('');
+    const loading = props.list.length === 0 ? true : false;
 
     const dispatch = useDispatch();
 
@@ -32,6 +33,12 @@ export default function SearchableList(props: SearchableListProps) {
             </Box>
             <Box height="calc(100vh - 198px)" sx={{ overflowY: "scroll" }} mb={2}>
                 <List sx={{ width: '100%' }}>
+                    {
+                        loading &&
+                        <Box textAlign="center">
+                            <CircularProgress />
+                        </Box>
+                    }
                     {
                         filteredItems.map(item =>
                             <ButtonBase onClick={() => onItemClick(item)} key={item.id} sx={{ width: "100%" }}>
