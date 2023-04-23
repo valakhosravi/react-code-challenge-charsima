@@ -1,18 +1,40 @@
-import { Avatar, Box, Button, ButtonBase, Divider, List, ListItem, ListItemAvatar, ListItemText, TextField, Typography } from '@mui/material'
-import React from 'react'
+import { Avatar, Box, Button, ButtonBase, List, ListItem, ListItemAvatar, ListItemText, TextField, Typography } from '@mui/material'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux/es/hooks/useDispatch'
 import { Item } from '../Interfaces/Item'
+import { addValue, clearValues } from '../Redux/Slices/valuesSlice';
 
 export default function SearchableList(props: SearchableListProps) {
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const dispatch = useDispatch();
+
+    const onItemClick = (item: Item) => {
+        dispatch(addValue(item.title));
+    }
+
+    const onClearListClick = () => {
+        dispatch(clearValues());
+    }
+
+    const filteredItems = props.list.filter((item) => {
+        return item.title.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(event.target.value);
+    };
+
     return (
         <Box sx={{ boxShadow: 3 }} p={3} height="calc(100% - 40px)">
             <Box mb={2}>
-                <TextField id="outlined-basic" label="Search..." variant="outlined" fullWidth />
+                <TextField onChange={handleSearchChange} id="outlined-basic" label="Search..." variant="outlined" fullWidth />
             </Box>
             <Box height="calc(100vh - 198px)" sx={{ overflowY: "scroll" }} mb={2}>
                 <List sx={{ width: '100%' }}>
                     {
-                        props.list.map(item =>
-                            <ButtonBase sx={{width: "100%"}}>
+                        filteredItems.map(item =>
+                            <ButtonBase onClick={() => onItemClick(item)} key={item.id} sx={{ width: "100%" }}>
                                 <ListItem alignItems="flex-start">
                                     <ListItemAvatar>
                                         <Avatar alt="" src="" />
@@ -39,7 +61,7 @@ export default function SearchableList(props: SearchableListProps) {
                 </List>
             </Box>
             <Box>
-                <Button variant="contained" fullWidth>
+                <Button onClick={() => onClearListClick()} variant="contained" fullWidth>
                     CLEAR LIST
                 </Button>
             </Box>

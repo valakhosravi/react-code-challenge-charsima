@@ -5,18 +5,20 @@ import { Grid } from '@mui/material';
 import TagList from './Components/TagList';
 import { getProducts, getUsers } from './Endpoints/api';
 import { Item } from './Interfaces/Item';
+import { useSelector } from 'react-redux/es/exports';
+import { RootState } from './Redux/Store';
 
 function App() {
   const [users, setUsers] = useState<Item[]>([]);
   const [products, setProducts] = useState<Item[]>([]);
+
+  const values = useSelector((state: RootState) => state.values);
 
   useEffect(() => {
     Promise.all([
       getUsers(),
       getProducts()
     ]).then(([usersResponse, productsResponse]) => {
-      console.log('usersResponse :>> ', usersResponse.data);
-      console.log('productsResponse :>> ', productsResponse.data);
       const _users = usersResponse.data.map((user: any) => ({
         id: user.id,
         title: user.username,
@@ -48,7 +50,7 @@ function App() {
         <SearchableList list={products}></SearchableList>
       </Grid>
       <Grid item xs={12} md={4}>
-        <TagList></TagList>
+        <TagList values={values.values}></TagList>
       </Grid>
     </Grid>
   );
